@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 import sys
 reload(sys)
 import string
@@ -6,7 +7,7 @@ sys.setdefaultencoding('utf-8')
 
 import xlrd
 import xlwt
-
+p = [string.punctuation,'“','♦','”','’','—']
 #global variations
 row_data2 = 'ljALKAJSFD'
 row_data3 = 'asdfasdlj'
@@ -26,7 +27,11 @@ def change(row_data):
 	row_data4 = 'skjfkds'
 	row_data5 = 'asdfsdf'
 	row_data6 = 'asfasdf'
-	row_data6 = 'asfasdf'	
+	row_data6 = 'asfasdf'
+
+	if row_data =='':
+		return
+
 	if row_data[len(row_data) -1 ] == 'y':
 		row_data2 = row_data[0:len(row_data)-1] + 'ie'
 		row_data3 = row_data[0:len(row_data)-1] + 'ies'
@@ -54,7 +59,7 @@ def judge(line,row_data,row_data2,row_data3,row_data4,row_data5,row_data6,row_da
 		
 
 	
-fname = 'all_words.xlsx'
+fname = 'all_words.xls'
 data = xlrd.open_workbook(fname)
 
 workbook = xlwt.Workbook(encoding = 'ascii')
@@ -96,7 +101,35 @@ def ranging(n):
 			
 #			wordsheet1.put_cell(count, n, 1, wordsheet1.cell(k,n).value, 0)
 #			wordsheet1.put_cell(k, n, 0 , '', 0)
-	workbook.save('receive.xls')	
+	workbook.save('receive.xls')
+
+
+
+def search(list,e,l,h):
+
+	while l < h:
+		mi = (l + h) / 2
+
+		if e < list[mi] :
+			h = mi
+		elif list[mi] < e :
+			l = mi + 1
+		else :
+			l = mi
+			break
+	return l
+
+list1 = ['0' for n in range(0,trows)]
+list2 = ['0' for n in range(0,grows)]
+
+for i in range(0,trows):
+	list1[i] = toeflsheet.cell(i,0).value
+
+for i in range(0,grows):
+	list2[i] = gresheet.cell(i,0).value
+
+
+
 
 
 # search in toefl vocabulary
@@ -107,17 +140,28 @@ line = txt.readline().lower()
 while line:
 
 	for a in line:
-		if a in string.punctuation:
-			line = line.replace(a,' ')		
+		if a in p:
+			line = line.replace(a,' ')
+	#print line				
 	m = line.split()
 
-	for i in range(0,trows):		
-		row_data = toeflsheet.cell(i,0).value
-		explanation = toeflsheet.cell(i,1).value			
-		change(row_data)
-		if judge(m,row_data,row_data2,row_data3,row_data4,row_data5,row_data6,row_data7) == 'yes':
-			worksheet.write(i, 0, label = row_data)
-			worksheet.write(i, 1, label = explanation)
+	for items in m:
+		#print items
+		lo = 0
+		hi = trows
+		lo = search(list1,items,lo,hi)
+		
+		#tem = [toeflsheet.cell(lo-1,1).value, toeflsheet.cell(lo,1).value, toeflsheet.cell(lo+1,1).value
+		for i in range(-1,2):
+			if lo >=5044:
+				continue
+			row_data = toeflsheet.cell(lo+i,0).value
+			explanation = toeflsheet.cell(lo+i,1).value
+			change(row_data)
+			if judge(items,row_data,row_data2,row_data3,row_data4,row_data5,row_data6,row_data7) == 'yes':
+				worksheet.write(lo+i, 0, label = row_data)
+				worksheet.write(lo+i, 1, label = explanation)	
+	
 		
 	line = txt.readline().lower()
 		
@@ -131,17 +175,25 @@ txt = open('passage.txt', 'r')
 line = txt.readline().lower()
 while line:
 	for a in line:
-		if a in string.punctuation:
+		if a in p:
 			line = line.replace(a,' ')		
 	m = line.split()
 
-	for i in range(0,grows):
-		row_data = gresheet.cell(i,0).value
-		explanation = gresheet.cell(i,1).value
-		change(row_data)
-		if judge(m,row_data,row_data2,row_data3,row_data4,row_data5,row_data6,row_data7) == 'yes':
-			worksheet.write(i, 2, label = row_data)	
-			worksheet.write(i, 3, label = explanation)	
+	for items in m:
+		lo = 0
+		hi = grows
+		lo = search(list2,items,lo,hi)
+		if lo >=10063:
+			continue		
+			#tem = [toeflsheet.cell(lo-1,1).value, toeflsheet.cell(lo,1).value, toeflsheet.cell(lo+1,1).value
+		for i in range(-1,2):
+			row_data = gresheet.cell(lo+i,0).value
+			explanation = gresheet.cell(lo+i,1).value
+			change(row_data)
+			if judge(items,row_data,row_data2,row_data3,row_data4,row_data5,row_data6,row_data7) == 'yes':
+				worksheet.write(lo+i, 2, label = row_data)
+				worksheet.write(lo+i, 3, label = explanation)	
+			
 	line = txt.readline().lower()
 
 txt.close()
