@@ -225,7 +225,7 @@ button2.pack(side=LEFT)
 
 frame3 = Frame(root)
 frame3.pack(side=BOTTOM)
-label1 = Label(frame3,text = 'Author: Atom            Wechat ID: oneatom          Email: 519001901@qq.com')
+label1 = Label(frame3,text = 'Author: Atom            Wechat ID: oneatom          E-mail: 519001901@qq.com')
 label1.pack(side=RIGHT)
 
 

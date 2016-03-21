@@ -7,6 +7,7 @@ import string
 sys.setdefaultencoding('utf-8')
 
 import xlrd
+import xlwt
 
 vocabulary = 'TOEFL'
 
@@ -46,16 +47,26 @@ def change_to_ori(row_data_):
         ori.append(row_data[0:l - 2] + 'y')
     if l >= 3 and row_data[l - 3:l] == 'ves':
         ori.append(row_data[0:l - 3] + 'f')
+    if l >= 2 and row_data[l-2:l] == 'es':
+        ori.append(row_data[0:l-1])
+        ori.append(row_data[0:l-2])
+    if l >= 2 and row_data[l-2:l] == 'ed':
+        ori.append(row_data[0:l-1])
+        ori.append(row_data[0:l-2])
+        ori.append(row_data[0:l-3]+'y')
     if row_data[-1] == 'a':
         ori.append(row_data[0:l - 1] + 'on')
         ori.append(row_data[0:l - 1] + 'um')
         ori.append(row_data[0:l - 1] + 'un')
     if row_data[-1] == 'i':
         ori.append(row_data[0:l - 1] + 'us')
+    if row_data[-1] == 'i':
+        ori.append(row_data[0:l - 1])
     if l >= 3 and row_data[l - 3:l] == 'ing':
         ori.append(row_data[0:l - 3])
         ori.append(row_data[0:l - 3] + 'e')
-    return ori
+    # print ori
+    return list(set(ori))
 
 
 def binarysearch(array, low, high, target):
@@ -70,7 +81,11 @@ def binarysearch(array, low, high, target):
         return binarysearch(array, mid + 1, high, target)
     if array[mid] == target:
         return mid
-
+'''
+def delete(word_list, vacabulary):
+    file = vocabulary + '.xls'
+    data = xlrd.open_workbook(fname)
+'''
 # read vocabulary data
 
 fname = vocabulary + '.xls'
@@ -133,6 +148,7 @@ def denote_line(line, word_list):
 from Tkinter import *
 
 root = Tk()
+root.title('单词批注小程序')
 
 frame1 = Frame(root)
 frame1.pack(side=TOP)
@@ -206,4 +222,11 @@ button = Button(frame2, text='批注',command=button)
 button2 = Button(frame2, text='清除',command=clear)
 button.pack(side=LEFT)
 button2.pack(side=LEFT)
+
+frame3 = Frame(root)
+frame3.pack(side=BOTTOM)
+label1 = Label(frame3,text = 'Author: Atom            Wechat ID: oneatom          E-mail: 519001901@qq.com')
+label1.pack(side=RIGHT)
+
+
 root.mainloop()
